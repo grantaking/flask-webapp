@@ -1,0 +1,57 @@
+{% extends 'layout.html' %}
+{% block headline %}
+  {{ school.SCHOOLNAME.title() }}
+{% endblock %}
+{% block subhead %}
+  {{ school.ADDRESS.title() }}, {{ school.City.title() }}
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+      <div class="col">
+        <p><strong>School type:</strong> {{ school.SCH_TYPE }}</p>
+        <p></p>
+        <p></p>        
+      </div>
+      <div class="col">
+        <div id='map' style='width: 100%; height: 300px;'></div>
+      </div>
+    </div>
+  </div>
+
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoianNvbWEiLCJhIjoibFJmYl9JWSJ9.AUm8d76cbOvVEn2mMeG_ZA';
+    var map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/light-v10',
+      center: [-74, 40.71],
+      zoom: 8
+    });
+    map.on('load', function() {
+      var geojsonData = {
+        "type": "FeatureCollection",
+        "features": [{
+          "type": "Feature",
+          "geometry": {
+            "type": "Point",
+            "coordinates": [{{ school.longitude }}, {{ school.latitude }}]
+          }
+        }]
+      };
+      map.addLayer({
+        "id": "points",
+        "type": "circle",
+        "source": {
+          "type": "geojson",
+          "data": geojsonData
+        },
+      "paint": {
+          "circle-radius": 5,
+          "circle-color": "#ECCB2F",
+          "circle-stroke-width": 1,
+          "circle-stroke-color": "black"
+      }
+      })
+    })
+</script>
+{% endblock %}
